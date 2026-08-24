@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Главная - AppStore{% endblock %}
+
+{% block content %}
+    <h2>Приложения в магазине</h2>
+
+    <ul>
+        {% for app in apps %}
+        <li><strong>{{ app.name }}</strong> - {{ app.category }}
+
+            {{ app.description|truncatechars:60 }}
+
+            {% if app.price == 0 %}
+                Бесплатно
+            {% else %}
+                {{ app.price }} $
+            {% endif %}
+        </li>
+        {% empty %}
+        <li>Приложений пока нет</li>
+        {% endfor %}
+    </ul>
+
+    <p>Всего приложений: {{ apps|length }}</p>
+{% endblock %}

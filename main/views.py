@@ -1,11 +1,13 @@
 from django.shortcuts import render
-from django.http import  HttpResponse
+
 from .models import App
 
-res=''
-for i in App.objects.all():
-    res += f'{i.name},'
 
 def index(request):
-    return HttpResponse(f'Приложений в магазине: {res}')
+    apps = App.objects.order_by('name').all()
+    featured = App.objects.order_by('-price').first()
+    return render(request, 'main/index.html', {'apps': apps})
 
+
+def about(request):
+    return render(request, 'main/about.html')
