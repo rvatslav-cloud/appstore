@@ -1,13 +1,17 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Главная - AppStore{% endblock %}
+{% block title %}Главная - AppStore {% endblock %}
 
 {% block content %}
+    {% if featured %}
+        <p>Приложение дня: <strong><a href="{% url 'app_detail' featured.id %}">{{ featured.name }}</a></strong></p>
+    {% endif %}
+
     <h2>Приложения в магазине</h2>
 
     <ul>
         {% for app in apps %}
-        <li><strong>{{ app.name }}</strong> - {{ app.category }}
+        <li><strong><a href="{% url 'app_detail' app.id %}">{{ app.name }}</a></strong> - {{ app.category }}
 
             {{ app.description|truncatechars:60 }}
 
