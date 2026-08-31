@@ -7,8 +7,14 @@
     <p><a href="{% url 'index' %}"> <- ко всем приложениям</a></p>
 
     <h2>{{ app.name}}</h2>
-    <p>Категория: {{ app.category|default:"без категории" }}</p>
 
+    <p>Категория:
+        {% if app.category %}
+            <a href="{% url 'category' app.category.id%}">{{app.category}}</a>
+        {% else %}
+            Без категории
+        {% endif %}
+    </p>
     <p>
         {% if app.price == 0 %}
             Бесплатно
