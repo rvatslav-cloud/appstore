@@ -27,3 +27,6 @@ li{
     font-weight: bold;
     color: #000;
 }
+form{
+    margin: 20px auto;
+}
