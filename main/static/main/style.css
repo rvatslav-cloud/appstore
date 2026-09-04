@@ -22,3 +22,8 @@ li{
     padding: 12pz 16px;
     margin-button: 10px;
 }
+
+.active {
+    font-weight: bold;
+    color: #000;
+}

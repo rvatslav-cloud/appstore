@@ -10,7 +10,7 @@
 
     <p>Категория:
         {% if app.category %}
-            <a href="{% url 'category' app.category.id%}">{{app.category}}</a>
+            <a href="{% url 'category' app.category.id %}">{{app.category}}</a>
         {% else %}
             Без категории
         {% endif %}
@@ -23,6 +23,16 @@
         {% endif %}
     </p>
      <p>{{ app.description|default:"Описание пока не добавлено" }}</p>
+
+
+    {% if similar_by_price %}
+    <h3>Примерно за те же деньги</h3>
+    {% for similar in similar_by_price %}
+        <p><a href="{% url 'app_detail' similar.id %}">{{ similar.name }}</a> — {{ similar.price }} $</p>
+    {% empty %}
+        <p>Нет похожих по цене приложений</p>
+    {% endfor %}
+    {% endif %}
 
     <p>Добавлено: {{ app.created_at|date:"d.m.Y H:i" }}</p>
 {% endblock %}
