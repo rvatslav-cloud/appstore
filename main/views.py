@@ -97,3 +97,23 @@ def free_in_category(request, category_id):
 def cheap_apps(request):
     apps = App.objects.filter(price__lt=100, price__gt=0).order_by('price')
     return render(request, 'main/cheap.html', {'apps': apps})
+
+
+def archive_year(request,year):
+    return HttpResponse(f"Вы открыли архив за {year} год")
+
+
+def developer_name(request, developer_name):
+    return HttpResponse(f'Имя разработчика: {developer_name}')
+
+
+def secure_key(request,secure_key):
+    return HttpResponse(f'Секретный ключ: {secure_key}')
+
+
+def apps_list(request, is_free):
+    if is_free:
+        message = "Это бесплатные приложения"
+    else:
+        message = "Это платные приложение"
+    return HttpResponse(message)

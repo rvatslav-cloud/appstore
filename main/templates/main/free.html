@@ -3,12 +3,12 @@
 {% block title %} Бесплатные приложения {% endblock %}
 
 {% block content %}
-    <p><a href="{% url 'index' %}"> <- На главную</a></p>
+    <p><a href="{% url 'main:index' %}"> <- На главную</a></p>
 
     <h2>Бесплатные приложения</h2>
 
     {% for app in apps %}
-        <p><a href="{% url 'app_detail' app.id%}">{{app.name}}</a></p>
+        <p><a href="{% url 'main:app_detail' app.id%}">{{app.name}}</a></p>
     {% empty %}
         <p> Бесплатных приложений пока нет </p>
     {% endfor %}

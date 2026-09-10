@@ -1,6 +1,11 @@
-from django.urls import path
+from django.urls import path,register_converter
 
 from . import views
+from .converters import YearConverter
+
+register_converter(YearConverter, 'yyyy')
+
+app_name = 'name'
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -14,4 +19,15 @@ urlpatterns = [
     path('free/<int:category_id>/', views.free_in_category, name='free_in_category'),
     path('cheap/', views.cheap_apps, name='cheap'),
 
+    path('developer/<str:developer_name>/', views.developer_name, name='developer'),
+
+    path('app/secure/<uuid:secure_key>/', views.secure_key, name='secure'),
+
+
+
+    path('free_apps', views.apps_list, {'is_free':True}, name='free_apps'),
+    path('paid_apps', views.apps_list, {'is_free':False}, name='paid_apps'),
+
+
+    path('archive/<yyyy:year>/', views.archive_year, name='archive'),
 ]

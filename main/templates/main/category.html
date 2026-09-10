@@ -3,13 +3,13 @@
 {% block title %}{{ category.name }} - AppStore {% endblock %}
 
 {% block content %}
-    <p><a href="{% url 'index' %}"> <- ко всем приложениям</a></p>
+    <p><a href="{% url 'main:index' %}"> <- ко всем приложениям</a></p>
 
     <h2>Категория:{{category.name}}</h2>
 
      <ul>
         {% for app in apps %}
-            <li><strong><a href="{% url 'app_detail' app.id %}">{{ app.name }}</a></strong> -
+            <li><strong><a href="{% url 'main:app_detail' app.id %}">{{ app.name }}</a></strong> -
                 {% if app.price == 0 %} Бесплатно {% else %}{{ app.price }} $ {% endif %}
             </li>
         {% empty %}
@@ -20,7 +20,7 @@
 
         {% if most_expensive %}
     <h3>Самое дорогое приложение в этой категории</h3>
-    <p><a href="{% url 'app_detail' most_expensive.id %}">{{ most_expensive.name }}</a> — {{ most_expensive.price }} $</p>
+    <p><a href="{% url 'main:app_detail' most_expensive.id %}">{{ most_expensive.name }}</a> — {{ most_expensive.price }} $</p>
         {% endif %}
     <p>Всего в категории: {{ apps|length }}</p>
 {% endblock %}
