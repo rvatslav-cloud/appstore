@@ -21,5 +21,21 @@
         {% endfor %}
     </ul>
 
+    <p>
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}"><- back</a>
+        {% else %}
+            <spa><- back</spa>
+        {% endif %}
+
+         | Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }} |
+
+        {% if page_obj.has_next %}
+         <a href="?page={{ page_obj.next_page_number }}">next -></a>
+        {% else %}
+            <spa>next -></spa>
+        {% endif %}
+    </p>
+
     <p>Всего приложений: {{ apps|length }}</p>
 {% endblock %}
