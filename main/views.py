@@ -99,9 +99,6 @@ def cheap_apps(request):
     return render(request, 'main/cheap.html', {'apps': apps})
 
 
-def archive_year(request,year):
-    return HttpResponse(f"Вы открыли архив за {year} год")
-
 
 def developer_name(request, developer_name):
     return HttpResponse(f'Имя разработчика: {developer_name}')

@@ -3,7 +3,6 @@ from django.urls import path,register_converter
 from . import views
 from .converters import YearConverter
 
-register_converter(YearConverter, 'yyyy')
 
 app_name = 'name'
 
@@ -29,5 +28,4 @@ urlpatterns = [
     path('paid_apps', views.apps_list, {'is_free':False}, name='paid_apps'),
 
 
-    path('archive/<yyyy:year>/', views.archive_year, name='archive'),
 ]
