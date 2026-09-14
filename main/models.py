@@ -25,3 +25,16 @@ class App(models.Model):
     class Meta:
         verbose_name = 'Приложения'
         verbose_name_plural = 'Приложения'
+
+class Review(models.Model):
+    app = models.ForeignKey(App,on_delete=models.CASCADE)
+    username = models.CharField(max_length=50)
+    comment = models.TextField(blank=True)
+    stars = models.PositiveSmallIntegerField(default=5)
+    recommended = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return f'{self.username} > {self.app.name}'
+

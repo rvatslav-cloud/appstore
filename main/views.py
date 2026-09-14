@@ -1,13 +1,14 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse,  HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_POST
 
 
 from django.views.generic import TemplateView,ListView, DetailView
 
-from .models import App, Category
+from .models import App, Category,Review
+from .forms import ReviewForm
 
 SORTS = {
     'new':'-created_at',
@@ -69,14 +70,42 @@ class AppDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         app= self.object
-        context['similar_apps'] = {
+        context['similar_apps'] = (
             App.objects.filter(
                 price__gte=app.price - 10,
                 price__lte=app.price +10,
             )
             .exclude(id=app.id)[:3]
-        }
+        )
+        context['form'] = ReviewForm()
+        context['reviews'] = app.review_set.order_by('created_at')
         return context
+
+@require_POST
+def add_review(request, app_id):
+    app = get_object_or_404(App, id=app_id)
+    form = ReviewForm(request.POST)
+
+    if form.is_valid():
+        review = form.save(commit=False)
+        review.app = app
+        review.save()
+        return redirect('main:app_detail', app_id=app.id)
+
+    reviews = app.review_set.order_by('-created_at')
+    similar_apps = (
+        App.objects.filter(
+            price__gte=app.price - 10,
+            price__lte=app.price + 10,
+        )
+        .exclude(id=app.id)[:3]
+    )
+    return render(request, 'main/app_detail.html', {
+        'app': app,
+        'form': form,
+        'reviews': reviews,
+        'similar_apps': similar_apps,
+    })
 
 
 def category_detail(request,category_id):
@@ -142,18 +171,38 @@ def secure_key(request,secure_key):
 
 
 
-def apps_list(request, is_free):
-    if is_free:
-        apps = App.objects.filter(price=0)
-        title = 'Бесплатные приложения'
-    else:
-        apps = App.objects.filter(price__gt=0)
-        title = 'Платные приложения'
+# def apps_list(request, is_free):
+#     if is_free:
+#         apps = App.objects.filter(price=0)
+#         title = 'Бесплатные приложения'
+#     else:
+#         apps = App.objects.filter(price__gt=0)
+#         title = 'Платные приложения'
+#
+#     return render(request, 'main/apps_list.html', {
+#         'apps': apps,
+#         'title': title,
+#     })
 
-    return render(request, 'main/apps_list.html', {
-        'apps': apps,
-        'title': title,
-    })
+class AppsIsFreeListView(ListView):
+    model = App
+    template_name = 'main/apps_list.html'
+    context_object_name = 'apps'
+
+    def get_queryset(self):
+        if self.kwargs.get('is_free'):
+            return App.objects.filter(price=0)
+        return App.objects.filter(price__gt=0)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.kwargs.get('is_free'):
+            context['title'] = 'Бесплатные приложения'
+        else:
+            context['title'] = 'Платные приложения'
+        return context
+
+
 
 def api_app_detail(request, app_id):
     app = get_object_or_404(App, id=app_id)
@@ -164,3 +213,5 @@ def api_app_detail(request, app_id):
         'price': str(app.price),
     }
     return JsonResponse(data)
+
+

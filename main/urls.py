@@ -11,6 +11,7 @@ urlpatterns = [
 
     path('app/<int:app_id>/', views.AppDetailView.as_view(), name='app_detail'),
 
+    path('app/<int:app_id>/review/', views.add_review, name='add_review'),
 
     path('category/<int:category_id>/', views.category_detail, name='category'),
     path('new/', views.NewAppView.as_view(), name='new'),
@@ -27,8 +28,8 @@ urlpatterns = [
 
 
 
-    path('free_apps', views.apps_list, {'is_free':True}, name='free_apps'),
-    path('paid_apps', views.apps_list, {'is_free':False}, name='paid_apps'),
+    path('free_apps', views.AppsIsFreeListView.as_view() , {'is_free': True}, name='free_apps'),
+    path('paid_apps', views.AppsIsFreeListView.as_view() , {'is_paid': False}, name='paid_apps'),
 
     path('api/app/<int:app_id>/', views.api_app_detail,  name='api_app_detail'),
 
