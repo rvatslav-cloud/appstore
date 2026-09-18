@@ -7,7 +7,7 @@
     <title>{% block title %}AppStore{% endblock %}</title>
 </head>
 <body>
-    <h1>AppStore</h1>
+    <h1> AppStore </h1>
     <nav>
         <a href="{% url 'main:index' %}"> Главная </a>
         <a href="{% url 'main:new' %}"> Новые приложения </a>
@@ -16,8 +16,21 @@
         <a href="{% url 'main:paid_apps' %}">Платные</a>
         <a href="{% url 'main:about' %}">О Магазине</a>
 
-
     </nav>
+
+    <p class="categories-nav">
+        Категории:
+        {% for category in categories %}
+            <a href="{% url 'main:category' category.id %}"
+               {% if request.resolver_match.url_name == 'category' and request.resolver_match.kwargs.category_id == category.id %}class="active"{% endif %}>
+                {{ category.name }}
+            </a>
+            ({{ category.apps_count }}){% if not forloop.last %} · {% endif %}
+        {% empty %}
+            пока нет
+        {% endfor %}
+    </p>
+
         <form method="GET" action="{% url 'main:index' %}">
         <input type="text" name="q" placeholder="Поиск приложений..." value="{{ q }}">
             {% if request.GET.sort %}
@@ -27,5 +40,10 @@
         </form>
 
     {% block content %}{% endblock %}
+    <p>Всего на сайте: категорий </p>
+
+    <footer>
+        <p>В магазине | {{ apps_total }} приложений | {{ categories_total }} категорий.|</p>
+    </footer>
 </body>
 </html>
