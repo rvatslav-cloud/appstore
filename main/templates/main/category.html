@@ -9,7 +9,12 @@
 
      <ul>
         {% for app in apps %}
-            <li><strong><a href="{% url 'main:app_detail' app.id %}">{{ app.name }}</a></strong> -
+
+            <li>
+                {% if app.icon %}
+                <img src="{{ app.icon.url }}" alt="{{ app.name }}" class="app-icon">
+                {% endif %}
+                <strong><a href="{% url 'main:app_detail' app.id %}">{{ app.name }}</a></strong> -
                 {% if app.price == 0 %} Бесплатно {% else %}{{ app.price }} $ {% endif %}
             </li>
         {% empty %}

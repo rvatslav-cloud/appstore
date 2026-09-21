@@ -8,6 +8,9 @@
 {% if apps %}
     {% for app in apps %}
     <div class="app-card">
+        {% if app.icon %}
+        <img src="{{ app.icon.url }}" alt="{{ app.name }}" class="app-icon">
+        {% endif %}
         <h3><a href="{% url 'main:app_detail' app.id %}">{{ app.name }}</a></h3>
         <p>{{ app.description|truncatechars:100 }}</p>
         <p>

@@ -8,6 +8,7 @@
         <p>Приложение дня:
             {% if featured.icon %}
             <img src="{{ featured.icon.url }}" alt="" class="app-icon">
+            {% endif %}
             <strong><a href="{% url 'main:app_detail' featured.id %}">{{featured.name}}</a></strong>
         </p>
     {% endif %}
