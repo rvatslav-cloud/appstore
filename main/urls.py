@@ -33,4 +33,7 @@ urlpatterns = [
 
     path('api/app/<int:app_id>/', views.api_app_detail,  name='api_app_detail'),
 
+    path('add-app/', views.add_app, name='add_app'),
+
+
 ]

@@ -5,7 +5,11 @@
 {% block content %}
 
     {% if featured %}
-        <p>Приложение дня: <strong><a href="{% url 'main:app_detail' featured.id %}">{{featured.name}}</a></strong></p>
+        <p>Приложение дня:
+            {% if featured.icon %}
+            <img src="{{ featured.icon.url }}" alt="" class="app-icon">
+            <strong><a href="{% url 'main:app_detail' featured.id %}">{{featured.name}}</a></strong>
+        </p>
     {% endif %}
 
     <h2>Приложения в магазине</h2>
@@ -17,7 +21,11 @@
 </p>
     <ul>
         {% for app in page_obj %}
-        <li><strong><a href="{% url 'main:app_detail' app.id %}">{{ app.name }}</a></strong> - {{ app.category }}<br>
+        <li>
+            {% if app.icon %}
+                <img src="{{ app.icon.url }}" alt="{{ app.name }}" class="app-icon">
+            {% endif %}
+            <strong><a href="{% url 'main:app_detail' app.id %}">{{ app.name }}</a></strong> - {{ app.category }}<br>
             {{ app.description|truncatechars:60 }}
             {% if app.price == 0 %}
                 Бесплатно

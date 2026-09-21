@@ -15,6 +15,7 @@
         <a href="{% url 'main:free_apps' %}">Бесплатные</a>
         <a href="{% url 'main:paid_apps' %}">Платные</a>
         <a href="{% url 'main:about' %}">О Магазине</a>
+        <a href="{% url 'main:add_app' %}">Добавить приложения</a>
 
     </nav>
 
@@ -43,7 +44,7 @@
     <p>Всего на сайте: категорий </p>
 
     <footer>
-        <p>В магазине | {{ apps_total }} приложений | {{ categories_total }} категорий.|</p>
+        <p>В магазине | {{ apps_total }} приложений | {{ categories_total }} категорий |</p>
     </footer>
 </body>
 </html>
