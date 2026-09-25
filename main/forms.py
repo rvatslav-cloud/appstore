@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import User
 
 
 from .models import Review,App
@@ -46,3 +48,14 @@ class AppForm(forms.ModelForm):
             'category': 'Категория',
             'icon': 'Иконка',
         }
+
+class RegisterForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ['username', 'password1', 'password2']
+
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args,**kwargs)
+        self.fields['username'].labels="Имя пользователя"
+        self.fields['password1'].labels = "Пароль"
+        self.fields['password2'].labels = "Повтор пароля"
