@@ -40,14 +40,23 @@ class ReviewForm(forms.ModelForm):
 class AppForm(forms.ModelForm):
     class Meta:
         model = App
-        fields = ['name', 'description', 'price', 'category', 'icon']
+        fields = ['name', 'description', 'price', 'category', 'icon','author']
         labels = {
-            'name': 'Название',
-            'description': 'Описание',
-            'price': 'Цена (0 = бесплатно)',
-            'category': 'Категория',
-            'icon': 'Иконка',
+            'name' : 'Название',
+            'description' : 'Описание',
+            'price' : 'Цена (0 = бесплатно)',
+            'category' : 'Категория',
+            'icon' : 'Иконка',
+            'author' : 'Автор',
         }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user and user.is_superuser:
+            self.fields['author'].queryset = User.objects.all()
+        else:
+            self.fields.pop('author')
 
 class RegisterForm(UserCreationForm):
     class Meta:

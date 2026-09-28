@@ -236,15 +236,15 @@ def api_app_detail(request, app_id):
 @login_required
 def add_app(request):
     if request.method == 'POST':
-        form=AppForm(request.POST,request.FILES)
+        form = AppForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
-            app=form.save(commit=False)
-            app.author = request.user
+            app = form.save(commit=False)
+            if not request.user.is_superuser:
+                app.author = request.user
             app.save()
-            messages.success(request, f"Приложение {app.name} опубликовано")
-            return redirect('main:app_detail', app_id=app.id)
+            ...
     else:
-        form = AppForm()
+        form = AppForm(user=request.user)
     return render(request, 'main/add_app.html', {'form':form})
 
 def register(request):
@@ -285,16 +285,16 @@ def my_apps(request):
 @login_required
 def edit_app(request, app_id):
     app = get_object_or_404(App, id=app_id)
-    if not request.user.is_staff and app.author_id != request.user.id:
+    if not request.user.is_superuser and app.author_id != request.user.id:
         messages.error(request, 'Редактировать карточку может только её автор.')
         return redirect('main:app_detail', app_id=app.id)
 
     if request.method == 'POST':
-        form = AppForm(request.POST, request.FILES, instance=app)
+        form = AppForm(request.POST, request.FILES, instance=app, user=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, f'Карточка «{app.name}» обновлена.')
             return redirect('main:app_detail', app_id=app.id)
     else:
-        form = AppForm(instance=app)
+        form = AppForm(instance=app, user=request.user)
     return render(request, 'main/edit_app.html', {'form': form, 'app': app})
