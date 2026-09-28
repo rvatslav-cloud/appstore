@@ -34,6 +34,8 @@ urlpatterns = [
     path('api/app/<int:app_id>/', views.api_app_detail,  name='api_app_detail'),
 
     path('add-app/', views.add_app, name='add_app'),
+    path('my-apps/', views.my_apps, name='my_apps'),
+    path('app/<int:app_id>/edit/', views.edit_app, name='edit_app'),
 
     path('register/', views.register, name='register'),
     path('login/', views.StoreLoginView.as_view(), name='login'),

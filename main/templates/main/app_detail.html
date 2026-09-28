@@ -31,6 +31,8 @@
      <p>{{ app.description|default:"Описание пока не добавлено" }}</p>
 
 
+
+
     {% if similar_by_price %}
     <h3>Примерно за те же деньги</h3>
     {% for similar in similar_by_price %}
@@ -41,6 +43,22 @@
     {% endif %}
 
     <p>Добавлено: {{ app.created_at|date:"d.m.Y H:i" }}</p>
+
+
+     <p>Автор:
+        {% if app.author %}
+            {{ app.author.username }}
+        {% else %}
+            не указан
+        {% endif %}
+    </p>
+
+    {% if user.is_authenticated %}
+        {% if user.is_staff or app.author_id == user.id %}
+            <p><a href="{% url 'main:edit_app' app.id %}">Редактировать</a></p>
+        {% endif %}
+    {% endif %}
+
 
     <section>
         <h2>Оставить отзыв</h2>

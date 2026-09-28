@@ -14,11 +14,13 @@
         <a href="{% url 'main:top' %}" class="{% if request.path == '/top/' %}active{% endif %}">Топ по цене</a>
         <a href="{% url 'main:free_apps' %}">Бесплатные</a>
         <a href="{% url 'main:paid_apps' %}">Платные</a>
+
         <a href="{% url 'main:about' %}">О Магазине</a>
 
         {% if user.is_authenticated %}
+            <a href="{% url 'main:my_apps' %}">Мои приложения</a>
             <a href="{% url 'main:add_app' %}">Добавить приложение</a>
-            <span>Вы вошли как <strong>{{ user.username }}</strong></span>
+            <span>Вы вошли как <strong>{{user.username}}</strong></span>
             <form method="post" action="{% url 'main:logout' %}" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit">Выйти</button>
@@ -33,7 +35,7 @@
     {% if messages %}
         <ul class="messages">
             {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}{{ message }}</li>
             {% endfor %}
         </ul>
     {% endif %}
@@ -60,8 +62,6 @@
         </form>
 
     {% block content %}{% endblock %}
-
-    <p>Пользователь: {{ user }}/ сделан ли вход {{ user.is_authenticated }}</p>
 
     <p>Всего на сайте: категорий </p>
 

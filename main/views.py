@@ -4,9 +4,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse,  HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
-from django.template.context_processors import request
-from django.views.decorators.csrf import requires_csrf_token
 from django.views.decorators.http import require_POST
+
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
@@ -35,7 +34,7 @@ def index(request):
     else:
         apps = App.objects.all()
 
-    apps = apps.order_by(SORTS.get(sort,'-created_at'))
+    apps = apps.select_related('author').order_by(SORTS.get(sort,'-created_at'))
     featured = App.objects.order_by('-price').first()
 
 
@@ -237,9 +236,12 @@ def api_app_detail(request, app_id):
 @login_required
 def add_app(request):
     if request.method == 'POST':
-        form=AppForm(request.POST,request.FIELS)
+        form=AppForm(request.POST,request.FILES)
         if form.is_valid():
-            app=form.save()
+            app=form.save(commit=False)
+            app.author = request.user
+            app.save()
+            messages.success(request, f"Приложение {app.name} опубликовано")
             return redirect('main:app_detail', app_id=app.id)
     else:
         form = AppForm()
@@ -275,3 +277,24 @@ class StoreLoginView(LoginView):
 class StoreLogoutView(LogoutView):
     next_page = reverse_lazy('main:index')
 
+@login_required
+def my_apps(request):
+    apps = App.objects.filter(author=request.user).order_by('-created_at')
+    return render(request, 'main/my_apps.html', {'apps': apps})
+
+@login_required
+def edit_app(request, app_id):
+    app = get_object_or_404(App, id=app_id)
+    if not request.user.is_staff and app.author_id != request.user.id:
+        messages.error(request, 'Редактировать карточку может только её автор.')
+        return redirect('main:app_detail', app_id=app.id)
+
+    if request.method == 'POST':
+        form = AppForm(request.POST, request.FILES, instance=app)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Карточка «{app.name}» обновлена.')
+            return redirect('main:app_detail', app_id=app.id)
+    else:
+        form = AppForm(instance=app)
+    return render(request, 'main/edit_app.html', {'form': form, 'app': app})

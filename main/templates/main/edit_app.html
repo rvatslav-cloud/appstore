@@ -1,0 +1,16 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Редактировать {{ app.name }} - AppStore{% endblock %}
+
+{% block content %}
+    <h2>Редактировать{{ app.name }}</h2>
+
+    <p>Галочка clear удаляет иконку. Если не трогать, ничего не поменяется</p>
+
+    <form method="post" action="{% url 'main:edit_app' app.id %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Применить изменения</button>
+    </form>
+    <p><a href="{% url 'main:app_detail' app.id %}"> Назад к карточке приложения</a></p>
+{% endblock %}
