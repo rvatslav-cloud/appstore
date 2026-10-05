@@ -26,7 +26,11 @@
             {% if app.icon %}
                 <img src="{{ app.icon.url }}" alt="{{ app.name }}" class="app-icon">
             {% endif %}
-            <strong><a href="{% url 'main:app_detail' app.id %}">{{ app.name }}</a></strong> - {{ app.category }}<br>
+            <strong><a href="{% url 'main:app_detail' app.id %}">{{ app.name }}</a></strong>
+            {% if app.id in favorite_ids %}
+            <span class="in-favorites">в избранном</span>
+            {% endif %}
+            - {{ app.category }}<br>
             {{ app.description|truncatechars:60 }}
             {% if app.price == 0 %}
                 Бесплатно
@@ -51,7 +55,7 @@
         {% if page_obj.has_previous %}
             <a href="?page={{ page_obj.previous_page_number }}&sort={{ sort }}&q={{ q }}"><- back</a>
         {% else %}
-            <spa><- back</spa>
+            <span><- back</span>
         {% endif %}
 
          | Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }} |

@@ -53,6 +53,20 @@
         {% endif %}
     </p>
 
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'main:toggle_favorite' app.id %}">
+            {% csrf_token %}
+            {% if is_favorite %}
+                <button type="submit">Убрать из избранного</button>
+            {% else %}
+                <button type="submit">В избранное</button>
+            {% endif %}
+        </form>
+    {% else %}
+        <p><a href="{% url 'main:login' %}?next={{ request.path }}">Войдите</a>, чтобы сохранить приложение в избранное.</p>
+    {% endif %}
+
+
    {% if user.is_authenticated %}
         {% if perms.main.change_app or user.is_staff or app.author_id == user.id %}
             <p><a href="{% url 'main:edit_app' app.id %}">Редактировать</a></p>

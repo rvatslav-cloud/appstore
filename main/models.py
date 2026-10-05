@@ -21,6 +21,7 @@ class App(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     icon = models.ImageField(upload_to='icons/', blank=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL,null=True,blank=True, related_name='apps',)
+    favorited_by = models.ManyToManyField(User, related_name='favorite_apps', blank=True, verbose_name='В избранном у')
 
     def __str__(self):
         return self.name
