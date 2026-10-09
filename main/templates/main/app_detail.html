@@ -33,10 +33,17 @@
 
 
 
-    {% if similar_by_price %}
+    {% if similar_apps %}
     <h3>Примерно за те же деньги</h3>
-    {% for similar in similar_by_price %}
-        <p><a href="{% url 'main:app_detail' similar.id %}">{{ similar.name }}</a> — {{ similar.price }} $</p>
+    {% for similar in similar_apps %}
+        <p><a href="{% url 'main:app_detail' similar.id %}">{{ similar.name }}</a> — {{ similar.price }} $
+        {% if similar.rating_count > 0 %}
+            - рейтинг: {{ similar.rating }}
+        {% else %}
+            - пока оценок нет
+        {% endif %}
+
+        </p>
     {% empty %}
         <p>Нет похожих по цене приложений</p>
     {% endfor %}
