@@ -42,7 +42,13 @@ def index(request):
     else:
         apps = App.objects.all()
 
-    apps = apps.select_related('author').order_by(SORTS.get(sort,'-created_at'))
+    apps = apps.select_related('author')
+    if sort=='rating':
+        apps = apps.order_by('-rating_avg', '-rating_count', 'name')
+    else:
+        apps = apps.order_by(SORTS.get(sort,'-created_at'))
+
+
     featured = App.objects.order_by('-price').first()
 
 

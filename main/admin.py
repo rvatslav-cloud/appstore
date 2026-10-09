@@ -8,7 +8,7 @@ admin.site.register(Review)
 
 @admin.register(App)
 class AppAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'category','author', 'created_at')
+    list_display = ('name', 'price', 'category','author', 'created_at', 'rating_avg', 'rating_count')
     search_fields = ('name','descriptions')
     list_filter = ('category',)
     filter_horizontal = ('favorited_by',)

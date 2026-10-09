@@ -19,6 +19,7 @@
     <a href="?sort=name{% if q %}&q={{ q }}{% endif %} ">по названию</a>
     <a href="?sort=price{% if q %}&q={{ q }}{% endif %} "> сначала дешёвые</a>
     <a href="?sort=expensive{% if q %}&q={{ q }}{% endif %} ">сначала дорогие</a>
+    <a href="?sort=rating{% if q %}&q={{ q }}{% endif %} ">сначала лучшее</a>
 </p>
     <ul>
         {% for app in page_obj %}
@@ -36,6 +37,11 @@
                 Бесплатно
             {% else %}
                 {{ app.price }} $
+            {% endif %}
+            {% if app.rating_count %}
+                оценка {{ app.rating_avg }} ({{ app.rating_count }})
+            {% else %}
+                нет оценок
             {% endif %}
             <p>Автор:
             {% if app.author %}

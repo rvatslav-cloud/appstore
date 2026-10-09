@@ -22,7 +22,12 @@ class App(models.Model):
     icon = models.ImageField(upload_to='icons/', blank=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL,null=True,blank=True, related_name='apps',)
     favorited_by = models.ManyToManyField(User, related_name='favorite_apps', blank=True, verbose_name='В избранном у')
-
+    rating_avg = models.DecimalField(max_digits=2, decimal_places=1, default=0, editable=False, verbose_name='Средний рейтинг')
+    rating_count = models.PositiveIntegerField(
+        default=0,
+        editable=False,
+        verbose_name='Число оценок',
+    )
     def __str__(self):
         return self.name
 
