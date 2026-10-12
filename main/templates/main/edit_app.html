@@ -12,5 +12,5 @@
         {{ form.as_p }}
         <button type="submit">Применить изменения</button>
     </form>
-    <p><a href="{% url 'main:app_detail' app.id %}"> Назад к карточке приложения</a></p>
+    <p><a href="{{ app.get_absolute_url }}"> Назад к карточке приложения</a></p>
 {% endblock %}

@@ -1,7 +1,17 @@
-from django.db import models
-from django.contrib.auth.models import User
+from decimal import Decimal, ROUND_HALF_UP
 
-# Create your models here.
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from django.urls import reverse
+
+
+def validate_non_negative_price(value):
+    if value < 0:
+        raise ValidationError('Цена не может быть отрицательной.')
+
+
 class Category(models.Model):
     name = models.CharField(max_length=50)
 
@@ -16,7 +26,7 @@ class Category(models.Model):
 class App(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=0, validators=[validate_non_negative_price])
     created_at = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     icon = models.ImageField(upload_to='icons/', blank=True)
@@ -38,6 +48,20 @@ class App(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('main:app_detail', kwargs={'app_id':self.pk})
+
+    def price_label(self):
+        if self.price ==0:
+            return "Бесплатно"
+        return f'{self.price} $'
+
+    def similar_by_price(self):
+        return App.objects.filter(
+            price__gte = self.price - 10,
+            price__lte = self.price + 10,
+        ).exclude(pk=self.pk)[:3]
+
     class Meta:
         verbose_name = 'Приложения'
         verbose_name_plural = 'Приложения'
@@ -46,7 +70,13 @@ class Review(models.Model):
     app = models.ForeignKey(App,on_delete=models.CASCADE)
     username = models.CharField(max_length=50)
     comment = models.TextField(blank=True)
-    stars = models.PositiveSmallIntegerField(default=5)
+    stars = models.PositiveSmallIntegerField(
+        default=5,
+        validators=[
+            MinValueValidator(1, message='Оценка должна быть от 1'),
+            MaxValueValidator(5, message='Оценка должна быть от 5'),
+        ]
+    )
     recommended = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

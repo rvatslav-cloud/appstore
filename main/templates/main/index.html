@@ -9,7 +9,7 @@
             {% if featured.icon %}
             <img src="{{ featured.icon.url }}" alt="" class="app-icon">
             {% endif %}
-            <strong><a href="{% url 'main:app_detail' featured.id %}">{{featured.name}}</a></strong>
+            <strong><a href="{{ featured.get_absolute_url }}">{{featured.name}}</a></strong>
         </p>
     {% endif %}
 
@@ -27,17 +27,14 @@
             {% if app.icon %}
                 <img src="{{ app.icon.url }}" alt="{{ app.name }}" class="app-icon">
             {% endif %}
-            <strong><a href="{% url 'main:app_detail' app.id %}">{{ app.name }}</a></strong>
+            <strong><a href="{{ app.get_absolute_url }}">{{ app.name }}</a></strong>
             {% if app.id in favorite_ids %}
             <span class="in-favorites">в избранном</span>
             {% endif %}
             - {{ app.category }}<br>
-            {{ app.description|truncatechars:60 }}
-            {% if app.price == 0 %}
-                Бесплатно
-            {% else %}
-                {{ app.price }} $
-            {% endif %}
+            {{ app.description|truncatechars:60 }}<br>
+            {{ app.price_label }}
+            -
             {% if app.rating_count %}
                 оценка {{ app.rating_avg }} ({{ app.rating_count }})
             {% else %}

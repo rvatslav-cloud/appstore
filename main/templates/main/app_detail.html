@@ -21,13 +21,7 @@
             Без категории
         {% endif %}
     </p>
-    <p>
-        {% if app.price == 0 %}
-            Бесплатно
-        {% else %}
-            {{app.price }} $
-        {% endif %}
-    </p>
+    <p><strong>Цена: {{ app.price_label }}</strong></p>
      <p>{{ app.description|default:"Описание пока не добавлено" }}</p>
 
 
