@@ -49,4 +49,6 @@ urlpatterns = [
     path('favorites/', views.favorites, name='favorites'),
     path('app/<int:app_id>/favorite/', views.toggle_favorites, name='toggle_favorite'),
 
+    path('sale/', views.sale, name='sale'),
+
 ]

@@ -375,3 +375,16 @@ def toggle_favorites(request, app_id):
         messages.success(request, f"{app.name} - добавили в избранное")
 
     return redirect('main:app_detail',app_id=app.id)
+
+@login_required
+def sale(request):
+    if not request.user.is_staff:
+        messages.error(request, 'Распродажу запускает только персонал')
+        return redirect('main:index')
+    if request.method == 'POST':
+        updated = App.discount_paid(10)
+        messages.success(request, f'Скидка 10% применена к платным приложениям: {updated}')
+        return redirect('main:index')
+
+    paid_count = App.objects.filter(price__gt=0).count()
+    return render(request, 'main/sale.html', {'paid_count' : paid_count})

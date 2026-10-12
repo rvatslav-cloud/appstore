@@ -9,14 +9,14 @@
     <h2>{{ app.name}}</h2>
 
     {% if app.icon %}
-        <p><img src="{{ app.icons.url }}" alt="{{ app.name }}" class="app-icon-lg"></p>
+        <p><img src="{{ app.icon.url }}" alt="{{ app.name }}" class="app-icon-lg"></p>
     {% else %}
         <p>Иконка пока не загружена</p>
     {% endif%}
 
     <p>Категория:
         {% if app.category %}
-            <a href="{% url 'main:category' app.category.id %}">{{app.category}}</a>
+            <a href="{{ app.category.get_absolute_url }}">{{app.category}}</a>
         {% else %}
             Без категории
         {% endif %}
@@ -25,18 +25,17 @@
      <p>{{ app.description|default:"Описание пока не добавлено" }}</p>
 
 
-
-
     {% if similar_apps %}
     <h3>Примерно за те же деньги</h3>
     {% for similar in similar_apps %}
-        <p><a href="{% url 'main:app_detail' similar.id %}">{{ similar.name }}</a> — {{ similar.price }} $
-        {% if similar.rating_count > 0 %}
-            - рейтинг: {{ similar.rating }}
-        {% else %}
-            - пока оценок нет
-        {% endif %}
-
+        <p>
+            <a href="{{ similar.get_absolute_url }}">{{ similar.name }}</a>
+            — {{ similar.price_label }}
+            {% if similar.rating_count > 0 %}
+                - рейтинг: {{ similar.rating }}
+            {% else %}
+                - пока оценок нет
+            {% endif %}
         </p>
     {% empty %}
         <p>Нет похожих по цене приложений</p>
@@ -81,7 +80,7 @@
         <form method="post" action="{% url 'main:add_review' app.id %}">
             {% csrf_token %}
 
-            {{ form.as_q }}
+            {{ form.as_p }}
 
             <button type="submit"> Оставить отзыв</button>
 

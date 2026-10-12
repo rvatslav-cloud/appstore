@@ -10,15 +10,11 @@
         {% for app in apps %}
         <li>
             {% if app.icon %}
-            <img src="{{ app.icon.url }}" alt="{{ app.name }}" class="app-icon">
+                <img src="{{ app.icon.url }}" alt="{{ app.name }}" class="app-icon">
             {% endif %}
-            <a href="{% url 'main:app_detail' app.id %}">{{ app.name }}</a> -
-            Добавлено:  {{ app.created_at|date:"d.m.Y" }}
-            {% if app.price == 0 %}
-                Бесплатно
-            {% else %}
-                {{ app.price }} $
-            {% endif %}
+            <a href="{{ app.get_absolute_url }}">{{ app.name }}</a> -
+            Добавлено: {{ app.created_at|date:"d.m.Y" }}
+            {{ app.price_label }}
         </li>
         {% empty %}
         <li>Приложений пока нет</li>
@@ -29,15 +25,15 @@
         {% if page_obj.has_previous %}
             <a href="?page={{ page_obj.previous_page_number }}"><- back</a>
         {% else %}
-            <spa><- back</spa>
+            <span><- back</span>
         {% endif %}
 
          | Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }} |
 
         {% if page_obj.has_next %}
-         <a href="?page={{ page_obj.next_page_number }}">next -></a>
+            <a href="?page={{ page_obj.next_page_number }}">next -></a>
         {% else %}
-            <spa>next -></spa>
+            <span>next -></span>
         {% endif %}
     </p>
 

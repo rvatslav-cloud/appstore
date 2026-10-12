@@ -20,6 +20,10 @@
         <a href="{% url 'main:about' %}">О Магазине</a>
 
         {% if user.is_authenticated %}
+            {% if user.is_staff %}
+                <a href="{% url 'main:sale' %}">Распродажа</a>
+            {% endif %}
+
             <a href="{% url 'main:my_apps' %}">Мои приложения</a>
             <a href="{% url 'main:add_app' %}">Добавить приложение</a>
             <span>Вы вошли как <strong>{{user.username}}</strong></span>
@@ -45,7 +49,7 @@
     <p class="categories-nav">
         Категории:
         {% for category in categories %}
-            <a href="{% url 'main:category' category.id %}"
+            <a href="{{ category.get_absolute_url }}"
                {% if request.resolver_match.url_name == 'category' and request.resolver_match.kwargs.category_id == category.id %}class="active"{% endif %}>
                 {{ category.name }}
             </a>

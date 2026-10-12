@@ -18,6 +18,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('main:category', kwargs={'category_id': self.pk})
+
     class Meta:
         verbose_name = 'Категории'
         verbose_name_plural = 'Категории'
@@ -61,6 +64,19 @@ class App(models.Model):
             price__gte = self.price - 10,
             price__lte = self.price + 10,
         ).exclude(pk=self.pk)[:3]
+
+    @classmethod
+    def discount_paid(cls, persent):
+        if type(persent) is not int or not 1 <= persent <=90:
+            raise ValueError('Скидка должна быть целым числом от 1 до 90')
+        factor = (Decimal(100) - Decimal(persent)) / Decimal(100)
+        paid = list(cls.objects.filter(price__gt=0))
+        for app in paid:
+            app.price = (app.price * factor).quantize(
+                Decimal('0.01'),
+                rounding=ROUND_HALF_UP,
+            )
+            return cls.objects.bulk_update(paid, ['price'])
 
     class Meta:
         verbose_name = 'Приложения'

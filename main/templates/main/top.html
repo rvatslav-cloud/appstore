@@ -5,9 +5,9 @@
 {% block content %}
     <p><a href="{% url 'main:index' %}"> <- На главную</a></p>
     <h2>Топ по цене (самые дорогие)</h2>
-    
+
     {% for app in apps %}
-        <p><a href="{% url 'main:app_detail' app.id %}">{{ app.name }}</a> — {{ app.price }} $</p>
+        <p><a href="{{ app.get_absolute_url }}">{{ app.name }}</a> — {{ app.price_label }}</p>
     {% empty %}
         <p>Платных приложений пока нет</p>
     {% endfor %}

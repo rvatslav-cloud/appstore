@@ -9,17 +9,11 @@
     {% for app in apps %}
     <div class="app-card">
         {% if app.icon %}
-        <img src="{{ app.icon.url }}" alt="{{ app.name }}" class="app-icon">
+            <img src="{{ app.icon.url }}" alt="{{ app.name }}" class="app-icon">
         {% endif %}
-        <h3><a href="{% url 'main:app_detail' app.id %}">{{ app.name }}</a></h3>
+        <h3><a href="{{ app.get_absolute_url }}">{{ app.name }}</a></h3>
         <p>{{ app.description|truncatechars:100 }}</p>
-        <p>
-            {% if app.price == 0 %}
-                Бесплатно
-            {% else %}
-                {{ app.price }} ₽
-            {% endif %}
-        </p>
+        <p>{{ app.price_label }}</p>
     </div>
     {% endfor %}
 {% else %}
@@ -29,15 +23,15 @@
         {% if page_obj.has_previous %}
             <a href="?page={{ page_obj.previous_page_number }}"><- back</a>
         {% else %}
-            <spa><- back</spa>
+            <span><- back</span>
         {% endif %}
 
          | Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }} |
 
         {% if page_obj.has_next %}
-         <a href="?page={{ page_obj.next_page_number }}">next -></a>
+            <a href="?page={{ page_obj.next_page_number }}">next -></a>
         {% else %}
-            <spa>next -></spa>
+            <span>next -></span>
         {% endif %}
     </p>
 {% endblock %}
