@@ -25,6 +25,24 @@ def refresh_app_rating(app_id):
         rating_count=total,
     )
 
+    latest = (
+      Review.objects
+      .filter(app_id=app_id)
+      .order_by('-created_at')
+      .values_list('comment', flat=True)
+      .first()
+    )
+    if latest and latest.strip():
+        latest_review = latest.strip()[:80]
+    else:
+        latest_review = ''
+
+    App.objects.filter(pk=app_id).update(
+        rating_avg = rating,
+        rating_count = total,
+        latest_review = latest_review,
+    )
+
 
 @receiver(post_save, sender=Review, dispatch_uid='main.review_saved_refresh_rating')
 def review_saved(sender, instance, **kwargs):

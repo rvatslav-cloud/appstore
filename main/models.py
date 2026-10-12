@@ -28,6 +28,13 @@ class App(models.Model):
         editable=False,
         verbose_name='Число оценок',
     )
+    latest_review =models.CharField(
+        max_length=80,
+        blank= True,
+        default= '',
+        editable= False,
+        verbose_name= 'Цитата последнего отзыва',
+    )
     def __str__(self):
         return self.name
 

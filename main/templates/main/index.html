@@ -43,6 +43,9 @@
             {% else %}
                 нет оценок
             {% endif %}
+            {% if app.latest_review %}
+                — Последний отзыв: «{{ app.latest_review }}»
+            {% endif %}
             <p>Автор:
             {% if app.author %}
                 {{ app.author.username }}
