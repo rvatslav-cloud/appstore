@@ -36,9 +36,9 @@
             {{ app.price_label }}
             -
             {% if app.rating_count %}
-                оценка {{ app.rating_avg }} ({{ app.rating_count }})
+               оценка {{ app.rating_avg }} ({{ app.rating_count }})
             {% else %}
-                нет оценок
+               нет оценок
             {% endif %}
             {% if app.latest_review %}
                 — Последний отзыв: «{{ app.latest_review }}»
