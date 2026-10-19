@@ -2,7 +2,7 @@ from http.client import responses
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse,  HttpResponse
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 
@@ -23,7 +23,7 @@ from django.urls import reverse_lazy, reverse
 
 from django.views.generic import TemplateView,ListView, DetailView
 
-from .models import App, Category,Review
+from .models import App, Category,Review, Purchase
 from .forms import ReviewForm,AppForm, RegisterForm
 
 SORTS = {
@@ -136,13 +136,14 @@ def add_review(request, app_id):
         'reviews': reviews,
         'similar_apps': similar_apps,
         'is_favorite':  request.user.is_authenticated
-                        and app.favorited_by.filter(pk=request.user.pk).exists()
+                        and app.favorited_by.filter(pk=request.user.pk).exists(),
+        'purchase' : app.purchase_of(request.user),
     })
 
 
 def category_detail(request,category_id):
     category = get_object_or_404(Category,id = category_id)
-    apps = App.objects.filter(category = category)
+    apps = App.objects.filter(category = category).defer('description')
     most_expensive = apps.order_by('-price').first()
     return render(request, 'main/category.html',{
         'category': category,
@@ -421,4 +422,40 @@ def close_category(request, category_id):
         'source' : source,
         'targets' : targets,
         'apps_count' : apps_count,
+    })
+
+
+@require_POST
+def buy_app(request, app_id):
+    app = get_object_or_404(App, id=app_id)
+
+    if not request.user.is_authenticated:
+        login_url = reverse('main:login')
+        return redirect(f'{login_url}?next={app.get_absolute_url()}')
+
+    if app.author_id == request.user.id:
+        messages.error(request, 'Это ваше приложение, покупать его не нужно.')
+        return redirect(app.get_absolute_url())
+
+    if app.purchase_of(request.user) is not None:
+        messages.info(request, f'{app.name} уже есть в ваших покупках.')
+        return redirect(app.get_absolute_url())
+
+    app.buyers.add(request.user, through_defaults={'price_paid': app.price})
+    messages.success(request, f'Покупка оформлена: {app.name}, {app.price_label()}.')
+    return redirect(app.get_absolute_url())
+
+
+@login_required
+def purchases(request):
+    items = (
+        Purchase.objects.filter(user=request.user)
+        .select_related('app')
+        .only('price_paid', 'purchased_at', 'app__name', 'app__price')
+        .order_by('-purchased_at')
+    )
+    total = items.aggregate(total=Sum('price_paid'))['total'] or 0
+    return render(request, 'main/purchases.html', {
+        'purchases': items,
+        'total': total,
     })

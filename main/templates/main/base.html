@@ -25,6 +25,7 @@
             {% endif %}
 
             <a href="{% url 'main:my_apps' %}">Мои приложения</a>
+            <a href="{% url 'main:purchases' %}">Мои покупки</a>
             <a href="{% url 'main:add_app' %}">Добавить приложение</a>
             <span>Вы вошли как <strong>{{user.username}}</strong></span>
             <form method="post" action="{% url 'main:logout' %}" style="display:inline;">
