@@ -1,4 +1,6 @@
 {% extends 'main/base.html' %}
+{% load store_tags %}
+
 
 {% block title %}Главная - AppStore {% endblock %}
 
@@ -36,7 +38,8 @@
             {{ app.price_label }}
             -
             {% if app.rating_count %}
-               оценка {{ app.rating_avg }} ({{ app.rating_count }})
+                оценка {{ app.rating_avg|stars }} {{ app.rating_avg }} ({{ app.rating_count }})
+
             {% else %}
                нет оценок
             {% endif %}
