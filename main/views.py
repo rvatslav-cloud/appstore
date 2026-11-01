@@ -24,7 +24,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView,ListView, DetailView
 
 from .models import App, Category,Review, Purchase
-from .forms import ReviewForm,AppForm, RegisterForm
+from .forms import ReviewForm,AppForm, RegisterForm, PriceFilterForm
 
 SORTS = {
     'new':'-created_at',
@@ -144,10 +144,22 @@ def add_review(request, app_id):
 def category_detail(request,category_id):
     category = get_object_or_404(Category,id = category_id)
     apps = App.objects.filter(category = category).defer('description')
+    form = PriceFilterForm(request.GET)
+    if form.is_valid():
+        price_min = form.cleaned_data['price_min']
+        price_max = form.cleaned_data['price_max']
+        if price_min is not None:
+            apps = apps.filter(price__gte=price_min)
+        if price_max is not None:
+            apps = apps.filter(price__lte=price_max)
+        if form.cleaned_data['sort']:
+            apps = apps.order_by(form.cleaned_data['sort'])
+
     most_expensive = apps.order_by('-price').first()
     return render(request, 'main/category.html',{
         'category': category,
-        'apps': apps,
+        'apps' : apps,
+        'form' : form,
         'most_expensive': most_expensive,
     })
 
@@ -384,7 +396,12 @@ def sale(request):
     if not request.user.is_staff:
         messages.error(request, 'Распродажу запускает только персонал')
         return redirect('main:index')
+
     if request.method == 'POST':
+        if 'end_sale' in request.POST:
+            restored = App.end_sale()
+            messages.success(request, f"Распродажа завершена, цены возвращены:{restored}")
+            return  redirect('main:index')
         updated = App.discount_paid(10)
         messages.success(request, f'Скидка 10% применена к платным приложениям: {updated}')
         return redirect('main:index')
