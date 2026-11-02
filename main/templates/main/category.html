@@ -11,9 +11,18 @@
         <p><a href="{% url 'main:close_category' category.id %}">Закрыть категорию</a></p>
     {% endif  %}
 
-    <form method="get">
-        {{ form.as_p }}
-        <button type="submit">Подобрать</button>
+   <form method="get" style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+
+    {{ form.non_field_errors }}
+
+    Цена от {{ form.price_min }}
+    до {{ form.price_max }}
+    {{ form.sort }}
+
+    <button type="submit">Подобрать</button>
+
+    <a href="{% url 'main:category' category.id %}">Сбросить</a>
+
     </form>
 
      <ul>

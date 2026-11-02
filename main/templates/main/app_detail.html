@@ -36,6 +36,9 @@
         <p>
             <a href="{{ similar.get_absolute_url }}">{{ similar.name }}</a>
             — {{ similar.price_label }}
+            {% if similar.price_before_sale %}
+                <s>{{ similar.price_before_sale }} $</s>
+            {% endif %}
             {% if similar.rating_count > 0 %}
                 - рейтинг: {{ similar.rating }}
             {% else %}
