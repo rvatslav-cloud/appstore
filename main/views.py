@@ -323,17 +323,23 @@ AppPriceFormSet = modelformset_factory(
 def my_prices(request):
     apps = App.objects.filter(author=request.user).order_by('name')
     if request.method == "POST":
-        formset=AppPriceFormSet(request.POST,queryset=apps)
+        formset = AppPriceFormSet(request.POST, queryset=apps)
         if formset.is_valid():
+            removed_from_sale = 0
             for form in formset:
                 if 'price' in form.changed_data:
+                    if form.instance.price_before_sale is not None:
+                        removed_from_sale += 1
                     form.instance.price_before_sale = None
             saved = formset.save()
-            messages.success(request, f"Изменено карточек: {len(saved)}")
+            messages.success(
+                request,
+                f"Изменено карточек: {len(saved)}, снято с распродажи: {removed_from_sale}"
+            )
             return redirect('main:my_apps')
     else:
         formset = AppPriceFormSet(queryset=apps)
-    return render(request, 'main/my_prices.html', {'formset':formset})
+    return render(request, 'main/my_prices.html', {'formset': formset})
 
 
 @login_required
@@ -349,9 +355,13 @@ def edit_app(request, app_id):
 
 
     if request.method == 'POST':
+        old_price = app.price
         form = AppForm(request.POST, request.FILES, instance=app, user=request.user)
         if form.is_valid():
-            form.save()
+            app = form.save(commit=False)
+            if app.price != old_price:
+                app.price_before_sale = None
+            app.save()
             messages.success(request, f'Карточка «{app.name}» обновлена.')
             return redirect('main:app_detail', app_id=app.id)
     else:
