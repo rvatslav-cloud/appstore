@@ -35,6 +35,7 @@ urlpatterns = [
 
     path('add-app/', views.add_app, name='add_app'),
     path('my-apps/', views.my_apps, name='my_apps'),
+    path('my-apps/prices/', views.my_prices, name='my_prices'),
     path('app/<int:app_id>/edit/', views.edit_app, name='edit_app'),
 
     path('register/', views.register, name='register'),

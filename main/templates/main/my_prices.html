@@ -1,0 +1,29 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Цены моих приложений - AppStore{% endblock %}
+
+{% block content %}
+    <h2>Цены моих приложений</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        {% for form in formset %}
+            <h3>{{ form.instance.name }}</h3>
+
+            {% if form.instance.price_before_sale %}
+                <p>На распродаже, цена до неё {{ form.instance.price_before_sale }} $.
+                    Новая цена снимет приложение с рапродажи</p>
+            {% endif %}
+
+            {{ form.as_p }}
+        {% empty %}
+            <p>Вы ещё не публиковали приложений</p>
+        {% endfor %}
+
+        <button type="submit">Сохранить цены</button>
+    </form>
+
+    <p><a href="{% url 'main:my_apps' %}">Назад к моим приложениям</a></p>
+{% endblock %}

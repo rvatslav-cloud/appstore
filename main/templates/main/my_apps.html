@@ -6,6 +6,8 @@
     <h2>Мои приложения</h2>
     <p>Карточки, которые опубликовали вы, {{ user.username }}.</p>
 
+    <p><a href="{% url 'main:my_prices' %}">Изменить цены сразу у всех</a></p>
+
     <ul>
         {% for app in apps %}
             <li>
