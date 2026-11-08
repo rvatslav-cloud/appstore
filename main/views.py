@@ -3,7 +3,8 @@ from django.http import JsonResponse,  HttpResponse
 from django.db.models import Q, Sum
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
-
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import (
@@ -32,6 +33,9 @@ SORTS = {
     'expensive':'-price',
 }
 
+
+@cache_page(60)
+@vary_on_cookie
 def index(request):
     q = request.GET.get('q','')
     sort = request.GET.get('sort', 'new')
@@ -249,7 +253,7 @@ class AppsIsFreeListView(ListView):
         return context
 
 
-
+@cache_page(60 * 5)
 def api_app_detail(request, app_id):
     app = get_object_or_404(App, id=app_id)
     data = {

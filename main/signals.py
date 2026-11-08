@@ -3,8 +3,9 @@ from decimal import Decimal, ROUND_HALF_UP
 from django.db.models import Avg, Count
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+from django.core.cache import cache
 
-from .models import App, Review
+from .models import App, Review, Category
 
 
 def refresh_app_rating(app_id):
@@ -52,3 +53,10 @@ def review_saved(sender, instance, **kwargs):
 @receiver(post_delete, sender=Review, dispatch_uid='main.review_deleted_refresh_rating')
 def review_deleted(sender, instance, **kwargs):
     refresh_app_rating(instance.app_id)
+
+
+@receiver([post_save, post_delete], sender=App)
+@receiver([post_save, post_delete], sender=Category)
+@receiver([post_save, post_delete], sender=Review)
+def clear_store_page(sender, **kwargs):
+    cache.clear()
