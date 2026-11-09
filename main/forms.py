@@ -49,6 +49,9 @@ class AppForm(forms.ModelForm):
             'icon' : 'Иконка',
             'author' : 'Автор',
         }
+        help_texts = {
+            'description': 'Можно использовать BBCode: [b]жирный[/b], [i]курсив[/i], [list][*]список[/list]',
+        }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
