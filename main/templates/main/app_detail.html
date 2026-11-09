@@ -1,4 +1,5 @@
 {% extends 'main/base.html' %}
+{% load bbcode_tags %}
 {% load store_tags %}
 
 {% block title %}{{app.name}} - AppStore{% endblock %}
@@ -27,7 +28,12 @@
             <s>{{ app.price_before_sale }}</s>
         {% endif %}
     </p>
-     <p>{{ app.description|default:"Описание пока не добавлено" }}</p>
+    {% if app.description %}
+        <p>Описание</p>
+        <div>{% bbcode app.description %}</div>
+    {% else %}
+        <p>Описание пока не добавлено</p>
+    {% endif %}
 
 
     {% if similar_apps %}
