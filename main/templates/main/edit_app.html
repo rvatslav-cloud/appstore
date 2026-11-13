@@ -7,6 +7,10 @@
 
     <p>Галочка clear удаляет иконку. Если не трогать, ничего не поменяется</p>
 
+    {% if app.icon %}
+        <p>Сейчас: <img src="{{app.icon.url}}" alt="{{ app.name }}" class="app-icon"></p>
+    {% endif %}
+
     <form method="post" action="{% url 'main:edit_app' app.id %}" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}

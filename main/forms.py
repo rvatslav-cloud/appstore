@@ -51,6 +51,7 @@ class AppForm(forms.ModelForm):
         }
         help_texts = {
             'description': 'Можно использовать BBCode: [b]жирный[/b], [i]курсив[/i], [list][*]список[/list]',
+            'icon': 'Форматы: png, jpg, jpeg или webp. Магазин уменьшает до размера 256x256',
         }
 
     def __init__(self, *args, **kwargs):
