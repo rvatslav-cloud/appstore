@@ -17,6 +17,8 @@ def validate_non_negative_price(value):
 
 def icon_upload_to(instance, filename):
     extension = Path(filename).suffix.lower()
+    if instance.author_id:
+        return f'icons/{instance.author_id}/{uuid4().hex}{extension}'
     return f'icons/{uuid4().hex}{extension}'
 
 class Category(models.Model):
@@ -209,3 +211,15 @@ class Purchase(models.Model):
         return f'{self.price_paid} $'
 
 
+class Screenshot(models.Model):
+    app = models.ForeignKey(App, on_delete=models.CASCADE, related_name='screenshots')
+    image = ThumbnailerImageField(
+        upload_to='screenshots/',
+        resize_source={'size': (800, 800)},
+        validators= [FileExtensionValidator(['png', 'jpg','jpeg', 'webp'])],
+        verbose_name='Скриншот'
+    )
+
+    class Meta:
+        verbose_name = 'Скриншот'
+        verbose_name_plural = 'Скриншоты'

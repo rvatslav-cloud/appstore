@@ -56,6 +56,10 @@
     {% endfor %}
     {% endif %}
 
+    {% for shot in app.screenshots.all %}
+        <img src="{{shot.image.url}}" alt="Скриншот{{ app.name }}" class="img-thumbnail" width="200">
+    {% endfor %}
+
     <p>Добавлено: {{ app.created_at|date:"d.m.Y H:i" }}</p>
 
 

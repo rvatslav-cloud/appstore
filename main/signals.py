@@ -5,7 +5,7 @@ from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.core.cache import cache
 
-from .models import App, Review, Category
+from .models import App, Review, Category, Screenshot
 
 
 def refresh_app_rating(app_id):
@@ -71,3 +71,7 @@ def delete_old_icon(sender, instance,**kwargs):
 def delete_app_icon_on_delete(sender,instance, **kwargs):
     if instance.icon:
         instance.icon.delete(save=False)
+
+@receiver(post_delete,sender=Screenshot)
+def delete_screenshot_file(sender,instance, **kwargs):
+    instance.image.delete(save=False)

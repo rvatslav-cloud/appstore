@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, App, Review, Purchase
+from .models import Category, App, Review, Purchase, Screenshot
 # Register your models here.
 
 admin.site.register(Category)
@@ -11,9 +11,14 @@ class ReviewInline(admin.TabularInline):
     fields = ['username','stars', 'comment', 'recommended']
     extra = 0
 
+class ScreenshotInline(admin.TabularInline):
+    model = Screenshot
+    extra = 1
+
+
 @admin.register(App)
 class AppAdmin(admin.ModelAdmin):
-    inlines = [ReviewInline]
+    inlines = [ReviewInline, ScreenshotInline]
     list_display = ('name', 'price', 'category','author', 'created_at', 'rating_avg', 'rating_count')
     search_fields = ('name','descriptions')
     list_filter = ('category',)
