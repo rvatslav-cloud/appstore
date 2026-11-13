@@ -66,3 +66,8 @@ def delete_old_icon(sender, instance,**kwargs):
     old = App.objects.filter(pk=instance.pk).first()
     if old and old.icon != instance.icon:
         old.icon.delete(save=False)
+
+@receiver(post_delete, sender=App)
+def delete_app_icon_on_delete(sender,instance, **kwargs):
+    if instance.icon:
+        instance.icon.delete(save=False)
