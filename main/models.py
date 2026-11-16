@@ -19,7 +19,7 @@ def icon_upload_to(instance, filename):
     extension = Path(filename).suffix.lower()
     if instance.author_id:
         return f'icons/{instance.author_id}/{uuid4().hex}{extension}'
-    return f'icons/{uuid4().hex}{extension}'
+    return f'icons/store/{uuid4().hex}{extension}'
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -223,3 +223,16 @@ class Screenshot(models.Model):
     class Meta:
         verbose_name = 'Скриншот'
         verbose_name_plural = 'Скриншоты'
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    bio = models.TextField(blank=True, verbose_name='О себе')
+    website = models.URLField(blank=True, verbose_name='Сайт')
+
+    class Meta:
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
+
+    def __str__(self):
+        return f'Профиль {self.user.username}'

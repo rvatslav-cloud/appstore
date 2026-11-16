@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, App, Review, Purchase, Screenshot
+from .models import Category, App, Review, Purchase, Screenshot, Profile
 # Register your models here.
 
 admin.site.register(Category)
@@ -29,3 +29,5 @@ class AppAdmin(admin.ModelAdmin):
 class AppAdmin(admin.ModelAdmin):
     list_display = ('user', 'app', 'price_paid','purchased_at')
     list_filter = ('app', 'user')
+
+admin.site.register(Profile)

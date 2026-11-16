@@ -20,11 +20,13 @@ from django.contrib import messages
 from django.forms import modelformset_factory
 from django.urls import reverse_lazy, reverse
 
+from django.contrib.auth.models import User
+from django.views.generic import TemplateView,ListView, DetailView, View
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from django.views.generic import TemplateView,ListView, DetailView
 
-from .models import App, Category,Review, Purchase
-from .forms import ReviewForm,AppForm, RegisterForm, PriceFilterForm
+from .models import App, Category,Review, Purchase, Profile
+from .forms import ReviewForm,AppForm, RegisterForm, PriceFilterForm,ProfileForms
 
 SORTS = {
     'new':'-created_at',
@@ -514,3 +516,27 @@ def purchases(request):
         'purchases': items,
         'total': total,
     })
+
+
+def dev_page(request, username):
+    developer = get_object_or_404(User, username=username)
+    apps = developer.apps.order_by('-created_at')
+    return render(request, 'main/dev_page.html', {
+        'developer' : developer,
+        'apps' : apps,
+    })
+
+class EditProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        form = ProfileForms(instance=profile)
+        return render(request, 'main/edit_profile.html', {'form':form})
+
+    def post(self, request):
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        form = ProfileForms(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Профиль сохранён')
+            return redirect('main:dev_page', username=request.user.username)
+        return render(request, 'main/edit_profile.html', {'form':form})

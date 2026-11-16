@@ -1,4 +1,4 @@
-from django.urls import path,register_converter
+from django.urls import path,register_converter,re_path
 
 from . import views
 
@@ -58,6 +58,9 @@ urlpatterns = [
 
     path('purchases/', views.purchases, name='purchases'),
 
+    re_path(r'^dev/(?P<username>[\w.@+-]+)/$', views.dev_page, name='dev_page'),
+
+    path('my-profile/', views.EditProfileView.as_view(), name='edit_profile'),
 
 
 ]
