@@ -64,3 +64,12 @@ urlpatterns = [
 
 
 ]
+
+urlpatterns += [
+    path('api/apps/', views.api_apps, name="api_apps"),
+
+    path('api/apps/<int:pk>/', views.ApiAppView.as_view(), name="api_app"),
+
+    path('api/devs/', views.api_devs, name='api_devs'),
+    path('api/devs/<int:user_id>/', views.api_devs, name='api_dev'),
+]
